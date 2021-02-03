@@ -1,12 +1,11 @@
 import React from 'react';
+import Canvas from '../Canvas/Canvas';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        hola sergio
-      </header>
-    </div>
+    <>
+      <Canvas />
+    </>
   );
 }
 
