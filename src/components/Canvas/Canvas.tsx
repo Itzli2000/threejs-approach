@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as THREE from 'three';
 import {
   ASPECT, FAR, FOV, NEAR, W_HEIGHT, W_WIDTH,
 } from '../../constants/three-config';
-import renderCube, { setCubeRotation } from '../Meshes/Cube';
+import renderCube from '../Meshes/Cube';
 import renderLines, { setLinesRotation } from '../Meshes/Lines';
 import './Canvas.css';
 
@@ -12,10 +12,14 @@ const Canvas = () => {
   let scene: THREE.Scene;
   let camera: THREE.PerspectiveCamera;
   let container: HTMLDivElement;
+  let light: THREE.AmbientLight;
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
   let cubeMesh: THREE.Mesh;
   let linesMesh: THREE.Line;
+
+  const [cubeRotate, setCubeRotate] = useState<boolean>(true);
+  const [cubeRotateBy, setCubeRotateBy] = useState<number>(0);
 
   useEffect(() => {
     init();
@@ -32,6 +36,8 @@ const Canvas = () => {
   const animate = () => {
     raycaster.setFromCamera(mouse, camera);
     requestAnimationFrame(animate);
+    cubeMesh.rotation.y += cubeRotateBy;
+    cubeMesh.rotation.z += cubeRotateBy;
     renderer.render(scene, camera);
   };
 
@@ -47,7 +53,9 @@ const Canvas = () => {
     const intersects = raycaster.intersectObjects(scene.children);
     if (intersects.length > 0) {
       if (intersects[0].object.name.includes('cube')) {
-        setCubeRotation(cubeMesh);
+        const value: number = cubeRotate ? 0.01 : 0;
+        setCubeRotateBy(value);
+        setCubeRotate(!cubeRotate);
       } else {
         setLinesRotation(linesMesh);
       }
@@ -67,6 +75,7 @@ const Canvas = () => {
   };
 
   const init = () => {
+    light = new THREE.AmbientLight(0xffffff);
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(FOV, ASPECT, NEAR, FAR);
     renderer = new THREE.WebGLRenderer();
@@ -79,6 +88,7 @@ const Canvas = () => {
     linesMesh = renderLines();
     scene.add(cubeMesh);
     scene.add(linesMesh);
+    scene.add(light);
     animate();
   };
 
