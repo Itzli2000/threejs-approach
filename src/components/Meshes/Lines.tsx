@@ -1,7 +1,11 @@
+/* eslint-disable no-param-reassign */
 import * as THREE from 'three';
-// import { DEFAULT_MESH_COLOR } from '../../constants/three-config';
 
-const renderLines = (scene: THREE.Scene) => {
+export const setLinesRotation = (lines: THREE.Line) => {
+  lines.rotation.x += 0.1;
+};
+
+const renderLines = () => {
   const points = [];
   points.push(new THREE.Vector3(-10, 0, 0));
   points.push(new THREE.Vector3(0, 10, 0));
@@ -9,9 +13,9 @@ const renderLines = (scene: THREE.Scene) => {
   const geometry = new THREE.BufferGeometry().setFromPoints(points);
   const material = new THREE.LineBasicMaterial({ color: 0x00ff00 });
   const line = new THREE.Line(geometry, material);
-  scene.add(line);
+  line.name = 'Lines meshes';
 
-  return scene;
+  return line;
 };
 
 export default renderLines;
